@@ -1,0 +1,81 @@
+@model SecureVaultApp.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>⚙️ Admin Dashboard</h4>
+        <form asp-action="Logout" asp-controller="Auth" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+        </form>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">All Users</h5>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td><span class="badge bg-primary">@user.Role</span></td>
+                            <td><span class="badge bg-secondary">@user.Department</span></td>
+                            <td>
+                                <!-- Assign Role -->
+                                <form asp-action="AssignRole" asp-controller="Dashboard" 
+                                      method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <select name="role" class="form-select form-select-sm d-inline w-auto">
+                                        @foreach (var role in Model.AvailableRoles)
+                                        {
+                                            <option value="@role" selected="@(role == user.Role)">
+                                                @role
+                                            </option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        Set Role
+                                    </button>
+                                </form>
+
+                                <!-- Assign Department -->
+                                <form asp-action="AssignDepartment" asp-controller="Dashboard" 
+                                      method="post" class="d-inline ms-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <select name="department" class="form-select form-select-sm d-inline w-auto">
+                                        @foreach (var dept in Model.AvailableDepartments)
+                                        {
+                                            <option value="@dept" selected="@(dept == user.Department)">
+                                                @dept
+                                            </option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="btn btn-secondary btn-sm">
+                                        Set Dept
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
