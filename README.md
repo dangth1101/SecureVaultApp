@@ -77,7 +77,6 @@ dotnet user-secrets set "DataProtection:EncryptionKey" "<your-aes-key>"
 
 ```csharp
 // Option A — ASP.NET Data Protection (default, no key config needed)
-builder.Services.AddDataProtection();
 builder.Services.AddScoped<IEncryptionService, DataProtectionEncryptionService>();
 
 // Option B — AES-256 + HMAC (requires DataProtection:EncryptionKey in config)

@@ -16,8 +16,11 @@ public static class AuthorizationPolicyExtensions
             options.AddPolicy("AdminOnly", p =>
                 p.RequireRole("Admin"));
 
-            // Level 3 — Department access
-            // Admin bypasses department check entirely
+            // Level 3 — Any authenticated role ← moved here
+            options.AddPolicy("AnyRole", p =>
+                p.RequireRole("Admin", "User"));
+
+            // Level 4 — Department access
             options.AddPolicy("FinanceAccess", p =>
                 p.RequireAssertion(IsAdminOrDepartment("Finance")));
 
@@ -26,10 +29,6 @@ public static class AuthorizationPolicyExtensions
 
             options.AddPolicy("HRAccess", p =>
                 p.RequireAssertion(IsAdminOrDepartment("HR")));
-
-            // Level 4 — Any authenticated role
-            options.AddPolicy("AnyRole", p =>
-                p.RequireRole("Admin", "User"));
         });
 
         return services;
