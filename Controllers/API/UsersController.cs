@@ -86,7 +86,7 @@ public class UsersController : ControllerBase
             adminId!,
             "ROLE_ASSIGNED",
             user.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok($"Role {dto.Role} assigned to user {user.UserName}.");
     }
@@ -108,7 +108,7 @@ public class UsersController : ControllerBase
             adminId!,
             "ROLE_REMOVED",
             user.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok($"Role {role} removed from user {user.UserName}.");
     }
@@ -151,7 +151,7 @@ public class UsersController : ControllerBase
             adminId!,
             "CLAIM_ADDED",
             user.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok($"Claim {dto.ClaimType}:{dto.ClaimValue} added to user {user.UserName}.");
     }

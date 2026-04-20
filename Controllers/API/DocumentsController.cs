@@ -56,7 +56,7 @@ public class DocumentsController(
             userId!,
             "DOCUMENT_CREATED",
             document.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return CreatedAtAction(nameof(GetById), new { id = document.Id }, new DocumentResponseDto
         {
@@ -120,7 +120,7 @@ public class DocumentsController(
             userId!,
             "DOCUMENT_VIEWED",
             document.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok(new DocumentResponseDto
         {
@@ -164,7 +164,7 @@ public class DocumentsController(
             userId!,
             "DOCUMENT_UPDATED",
             document.Id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok(new DocumentResponseDto
         {
@@ -196,7 +196,7 @@ public class DocumentsController(
             userId!,
             "DOCUMENT_DELETED",
             id,
-            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            IpAddressHelper.GetIpAddress(HttpContext));
 
         return Ok($"Document {id} deleted successfully.");
     }

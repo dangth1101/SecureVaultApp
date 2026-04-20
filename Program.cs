@@ -1,5 +1,6 @@
 using SecureVaultApp.Data;
 using SecureVaultApp.Extensions;
+using SecureVaultApp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
