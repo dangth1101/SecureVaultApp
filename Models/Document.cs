@@ -6,7 +6,8 @@ public class Document
     public string Title { get; set; }
     public string EncryptedContent { get; set; }
     public string OwnerId { get; set; }
-    public string Classification { get; set; } // Public, Internal, Confidential
+    public string Classification { get; set; }
+    public string Department { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

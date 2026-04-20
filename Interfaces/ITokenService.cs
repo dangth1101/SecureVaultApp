@@ -5,7 +5,7 @@ namespace SecureVaultApp.Interfaces;
 
 public interface ITokenService
 {
-    string GenerateJwtToken(IdentityUser user, IList<string> roles);
+    Task<string> GenerateJwtToken(IdentityUser user);
     string GenerateRefreshToken();
     ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
 }

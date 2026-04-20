@@ -13,4 +13,8 @@ public class DocumentCreateDto
 
     [Required]
     public string Classification { get; set; }
+
+
+    [Required]
+    public string Department { get; set; }
 }

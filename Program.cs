@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecureVaultApp.Data;
+using SecureVaultApp.Extensions;
 using SecureVaultApp.Interfaces;
 using SecureVaultApp.Services;
 using SecureVaultApp.Services.EncryptionServices;
@@ -36,6 +37,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddSecureVaultPolicies();
 
 // ===== BUILD =====
 

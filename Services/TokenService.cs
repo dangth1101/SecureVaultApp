@@ -11,34 +11,39 @@ namespace SecureVaultApp.Services;
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService(IConfiguration configuration, UserManager<IdentityUser> userManager)
     {
         _configuration = configuration;
+        _userManager = userManager;
     }
 
-    public string GenerateJwtToken(IdentityUser user, IList<string> roles)
+    public async Task<string> GenerateJwtToken(IdentityUser user)
     {
-        // Step 1 — Build claims
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? "User";
+
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, role)
         };
 
-        // Add one claim per role
-        foreach (var role in roles)
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        var department = userClaims.FirstOrDefault(c => c.Type == "department");
+        if (department != null)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(new Claim("department", department.Value));
         }
 
-        // Step 2 — Create signing key
+
         var secret = _configuration["JwtSettings:Secret"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Step 3 — Define the token
         var expiryMinutes = int.Parse(_configuration["JwtSettings:ExpiryMinutes"]!);
         var token = new JwtSecurityToken(
             issuer: _configuration["JwtSettings:Issuer"],
@@ -48,7 +53,6 @@ public class TokenService : ITokenService
             signingCredentials: credentials
         );
 
-        // Step 4 — Write and return token string
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
@@ -71,7 +75,7 @@ public class TokenService : ITokenService
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false, // ← ignore expiry on purpose
+            ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
             ValidIssuer = _configuration["JwtSettings:Issuer"],
             ValidAudience = _configuration["JwtSettings:Audience"],
